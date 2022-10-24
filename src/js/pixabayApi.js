@@ -23,6 +23,10 @@ export default class PixabayApiFetch {
       });
   }
 
+  resetPage() {
+    this.page = 1;
+  }
+
   get query() {
     return this.searchQuery;
   }

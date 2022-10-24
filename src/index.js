@@ -18,6 +18,7 @@ function onSearch(evt) {
   evt.preventDefault();
 
   pixabayApiFetch.query = evt.currentTarget.elements.searchQuery.value;
+  pixabayApiFetch.resetPage();
   pixabayApiFetch.fetchImages();
 }
 
