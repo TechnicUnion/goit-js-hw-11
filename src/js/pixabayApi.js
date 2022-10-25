@@ -14,12 +14,14 @@ export default class PixabayApiFetch {
       safesearch: 'true',
       per_page: '40',
     });
-    fetch(
+    return fetch(
       `${BASE_URL}?key=${KEY}&q=${this.searchQuery}&${searchParams}&page=${this.page}`
     )
       .then(response => response.json())
       .then(data => {
         this.page += 1;
+        console.log(data);
+        return data.hits;
       });
   }
 
