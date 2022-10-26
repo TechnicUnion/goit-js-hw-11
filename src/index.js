@@ -1,5 +1,5 @@
 import './css/styles.css';
-import axios from 'axios';
+// import axios from 'axios';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import PixabayApiFetch from './js/pixabayApi';
 import imagesCard from './js/templates/markup.hbs';
@@ -27,20 +27,22 @@ function onSearch(evt) {
     return;
   }
   pixabayApiFetch.resetPage();
-  pixabayApiFetch.fetchImages().then(data => {
-    appendImagesMarcup(data);
+  pixabayApiFetch.fetchImages().then(response => {
+    appendImagesMarcup(response);
+    checkTotalPage(response);
+    Notify.success(`Hooray! We found ${response.data.totalHits} images.`);
   });
 }
 
 function onLoadMore() {
-  pixabayApiFetch.fetchImages().then(data => {
-    appendImagesMarcup(data);
-    checkTotalPage(data);
+  pixabayApiFetch.fetchImages().then(response => {
+    appendImagesMarcup(response);
+    checkTotalPage(response);
   });
 }
 
-function appendImagesMarcup(data) {
-  if (data.hits.length === 0) {
+function appendImagesMarcup(response) {
+  if (response.data.hits.length === 0) {
     refs.loadMoreButton.classList.add('is-hidden');
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
@@ -48,7 +50,10 @@ function appendImagesMarcup(data) {
     return;
   }
 
-  refs.galleryContainer.insertAdjacentHTML('beforeend', imagesCard(data.hits));
+  refs.galleryContainer.insertAdjacentHTML(
+    'beforeend',
+    imagesCard(response.data.hits)
+  );
   refs.loadMoreButton.classList.remove('is-hidden');
 }
 
@@ -56,8 +61,10 @@ function clearImagesMarcup() {
   refs.galleryContainer.innerHTML = '';
 }
 
-function checkTotalPage(data) {
-  const totalPade = Math.ceil(data.totalHits / pixabayApiFetch.per_page);
+function checkTotalPage(response) {
+  const totalPade = Math.ceil(
+    response.data.totalHits / pixabayApiFetch.per_page
+  );
 
   if (pixabayApiFetch.page > totalPade) {
     refs.loadMoreButton.classList.add('is-hidden');
