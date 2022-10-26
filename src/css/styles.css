@@ -23,6 +23,8 @@ img {
   max-width: 1200px;
   padding-left: 15px;
   padding-right: 15px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .search-form {
@@ -49,8 +51,6 @@ input {
 
   margin-top: 70px;
   margin-bottom: 30px;
-  margin-right: auto;
-  margin-left: auto;
 }
 
 .photo-card {

@@ -28,16 +28,20 @@ function onSearch(evt) {
   clearImagesMarcup();
   pixabayApiFetch.query = evt.currentTarget.elements.searchQuery.value.trim();
   if (!pixabayApiFetch.query) {
-    Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
+    failureNotify();
     return;
   }
   pixabayApiFetch.resetPage();
   pixabayApiFetch.fetchImages().then(response => {
+    if (response.data.hits.length === 0) {
+      refs.loadMoreButton.classList.add('is-hidden');
+      failureNotify();
+      return;
+    }
+
     appendImagesMarcup(response);
+    successNotify(response);
     checkTotalPage(response);
-    Notify.success(`Hooray! We found ${response.data.totalHits} images.`);
   });
 }
 
@@ -50,21 +54,11 @@ function onLoadMore() {
 }
 
 function appendImagesMarcup(response) {
-  if (response.data.hits.length === 0) {
-    refs.loadMoreButton.classList.add('is-hidden');
-    Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
-    return;
-  }
-
   refs.galleryContainer.insertAdjacentHTML(
     'beforeend',
     imagesCard(response.data.hits)
   );
-
   onImageClick();
-
   refs.loadMoreButton.classList.remove('is-hidden');
 }
 
@@ -76,12 +70,9 @@ function checkTotalPage(response) {
   const totalPade = Math.ceil(
     response.data.totalHits / pixabayApiFetch.per_page
   );
-
   if (pixabayApiFetch.page > totalPade) {
     refs.loadMoreButton.classList.add('is-hidden');
-    Notify.info(
-      'We are sorry, but you have reached the end of search results.'
-    );
+    infoNotify();
   }
 }
 
@@ -100,4 +91,18 @@ function cardsScroll() {
     top: cardHeight * 2,
     behavior: 'smooth',
   });
+}
+
+function successNotify(response) {
+  Notify.success(`Hooray! We found ${response.data.totalHits} images.`);
+}
+
+function infoNotify() {
+  Notify.info('We are sorry, but you have reached the end of search results.');
+}
+
+function failureNotify() {
+  Notify.failure(
+    'Sorry, there are no images matching your search query. Please try again.'
+  );
 }
