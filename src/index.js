@@ -1,6 +1,8 @@
 import './css/styles.css';
-// import axios from 'axios';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 import PixabayApiFetch from './js/pixabayApi';
 import imagesCard from './js/templates/markup.hbs';
 
@@ -9,6 +11,11 @@ const refs = {
   galleryContainer: document.querySelector('.gallery'),
   loadMoreButton: document.querySelector('.load-more'),
 };
+
+new SimpleLightbox('.photo-card a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 const pixabayApiFetch = new PixabayApiFetch();
 
@@ -54,6 +61,9 @@ function appendImagesMarcup(response) {
     'beforeend',
     imagesCard(response.data.hits)
   );
+
+  onImageClick();
+
   refs.loadMoreButton.classList.remove('is-hidden');
 }
 
@@ -72,4 +82,11 @@ function checkTotalPage(response) {
       'We are sorry, but you have reached the end of search results.'
     );
   }
+}
+
+function onImageClick() {
+  const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
 }

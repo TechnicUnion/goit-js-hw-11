@@ -15,7 +15,6 @@ body {
 img {
   display: block;
   max-width: 100%;
-  max-height: 195px;
   height: 100%;
   width: 100%;
 }
@@ -66,6 +65,7 @@ input {
 
 .wrap {
   flex-grow: 1;
+  max-height: 180px;
 }
 
 .info {
