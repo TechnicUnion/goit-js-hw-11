@@ -45,6 +45,7 @@ function onLoadMore() {
   pixabayApiFetch.fetchImages().then(response => {
     appendImagesMarcup(response);
     checkTotalPage(response);
+    cardsScroll();
   });
 }
 
@@ -88,5 +89,15 @@ function onImageClick() {
   const lightbox = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: 250,
+  });
+}
+
+function cardsScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
   });
 }
