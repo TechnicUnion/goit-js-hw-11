@@ -2,6 +2,7 @@ export default class PixabayApiFetch {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
+    this.per_page = 40;
   }
 
   fetchImages() {
@@ -21,7 +22,7 @@ export default class PixabayApiFetch {
       .then(data => {
         this.page += 1;
         console.log(data);
-        return data.hits;
+        return data;
       });
   }
 
