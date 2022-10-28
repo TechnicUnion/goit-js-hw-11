@@ -22,7 +22,7 @@ const pixabayApiFetch = new PixabayApiFetch();
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreButton.addEventListener('click', onLoadMore);
 
-function onSearch(evt) {
+async function onSearch(evt) {
   evt.preventDefault();
 
   clearImagesMarcup();
@@ -32,26 +32,31 @@ function onSearch(evt) {
     return;
   }
   pixabayApiFetch.resetPage();
-  pixabayApiFetch.fetchImages().then(response => {
-    if (response.data.hits.length === 0) {
-      refs.loadMoreButton.classList.add('is-hidden');
-      failureNotify();
-      return;
-    }
+  const response = await pixabayApiFetch.fetchImages();
+  if (response.data.hits.length === 0) {
+    refs.loadMoreButton.classList.add('is-hidden');
+    failureNotify();
+    return;
+  }
 
-    appendImagesMarcup(response);
-    successNotify(response);
-    checkTotalPage(response);
-  });
+  appendImagesMarcup(response);
+  successNotify(response);
+  checkTotalPage(response);
 }
 
-function onLoadMore() {
-  pixabayApiFetch.fetchImages().then(response => {
-    appendImagesMarcup(response);
-    checkTotalPage(response);
-    cardsScroll();
-  });
+async function onLoadMore() {
+  const response = await pixabayApiFetch.fetchImages();
+  appendImagesMarcup(response);
+  checkTotalPage(response);
+  cardsScroll();
 }
+
+// pixabayApiFetch.fetchImages().then(response => {
+//   appendImagesMarcup(response);
+//   checkTotalPage(response);
+//   cardsScroll();
+// });
+// }
 
 function appendImagesMarcup(response) {
   refs.galleryContainer.insertAdjacentHTML(
